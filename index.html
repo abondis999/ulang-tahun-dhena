@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Kak Dhena</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: black;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            color: white;
+        }
+
+        .stars {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: url("https://i.imgur.com/7b1Yw6P.png") repeat;
+            animation: gerakBintang 60s linear infinite;
+            z-index: -3;
+        }
+
+        @keyframes gerakBintang {
+            from { background-position: 0 0; }
+            to { background-position: -2000px 2000px; }
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        .marquee {
+            margin-top: 30px;
+            white-space: nowrap;
+            font-size: clamp(36px, 6vw, 64px);
+            font-family: 'Pacifico', cursive;
+            text-shadow: 0 0 10px #ff69b4, 0 0 30px #ff1493;
+            animation: jalan 25s linear infinite;
+        }
+
+        @keyframes jalan {
+            from { transform: translateX(100%); }
+            to { transform: translateX(-100%); }
+        }
+
+        .text-bawah {
+            margin-top: 40px;
+            font-size: clamp(16px, 3.5vw, 22px);
+            color: #00ff7f;
+            padding: 0 20px;
+            min-height: 180px;
+        }
+
+        .pengirim {
+            margin-top: 20px;
+            opacity: 0;
+            animation: muncul 2s ease forwards;
+            animation-delay: 10s;
+        }
+
+        @keyframes muncul {
+            to { opacity: 1; }
+        }
+
+        .controls {
+            margin-top: 25px;
+        }
+
+        button {
+            background: #ff1493;
+            border: none;
+            color: white;
+            padding: 12px 18px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 5px;
+            box-shadow: 0 0 15px #ff69b4;
+        }
+
+        button:hover {
+            opacity: 0.85;
+        }
+
+        .gelap {
+            background: rgba(0,0,0,0.85);
+        }
+    </style>
+</head>
+<body>
+
+<div class="stars"></div>
+<canvas id="confetti"></canvas>
+
+<audio id="musik" loop>
+    <source src="jamrud-ulang-tahun.mp3" type="audio/mpeg">
+</audio>
+
+<div class="marquee">Happy B'Day Dhena</div>
+
+<div class="text-bawah" id="typewriter"></div>
+
+<div class="pengirim">— Dari adikmu yang selalu sayang 💚</div>
+
+<div class="controls">
+    <button onclick="toggleMusic()">▶️ / ⏸️ Musik</button>
+    <button onclick="tiupLilin()">🎂 Tiup Lilin</button>
+</div>
+
+<script>
+    /* Typewriter */
+    const text = `Selamat ulang tahun, Kakakku tersayang 💚
+Terima kasih sudah selalu jadi pelindung,
+tempat cerita, dan sosok yang selalu aku banggakan.
+Semoga kakak selalu sehat, bahagia,
+dan semua mimpi kakak tercapai satu per satu.`;
+
+    let i = 0;
+    function typeWriter() {
+        if (i < text.length) {
+            document.getElementById("typewriter").innerHTML +=
+                text.charAt(i) === "\n" ? "<br>" : text.charAt(i);
+            i++;
+            setTimeout(typeWriter, 50);
+        }
+    }
+    typeWriter();
+
+    /* Musik control */
+    const musik = document.getElementById("musik");
+    function toggleMusic() {
+        musik.paused ? musik.play() : musik.pause();
+    }
+
+    /* Confetti */
+    const canvas = document.getElementById("confetti");
+    const ctx = canvas.getContext("2d");
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+
+    let jalan = true;
+    const confetti = Array.from({ length: 120 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 5 + 2,
+        d: Math.random() * 2 + 1
+    }));
+
+    function drawConfetti() {
+        if (!jalan) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "rgba(255,255,255,0.8)";
+        confetti.forEach(c => {
+            ctx.beginPath();
+            ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+            ctx.fill();
+            c.y += c.d;
+            if (c.y > canvas.height) c.y = 0;
+        });
+        requestAnimationFrame(drawConfetti);
+    }
+    drawConfetti();
+
+    /* Tiup lilin */
+    function tiupLilin() {
+        jalan = false;
+        document.body.classList.add("gelap");
+        alert("🎉 Lilinnya sudah ditiup!\nSemoga semua doa kakak terkabul 💚");
+    }
+</script>
+
+</body>
+</html>
